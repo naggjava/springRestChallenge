@@ -1,19 +1,18 @@
 package com.streamlinity.ct.restService.challenge;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.streamlinity.ct.model.Item;
-
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.streamlinity.ct.model.Item;
 
 /*
  * Provide your implementation of the SearchSvcImpl here.
@@ -28,6 +27,7 @@ import javax.annotation.PostConstruct;
 
 public class SearchSvcImpl implements SearchSvcInterface {
 	
+	private static final Logger logger = LoggerFactory.getLogger(SearchSvcImpl.class);
 	
 	private List<Item> itemsInMemory;
 	
@@ -40,9 +40,9 @@ public class SearchSvcImpl implements SearchSvcInterface {
     @Override
     public void init(String itemPriceJsonFileName) {
       try {
-		this.itemsInMemory =  mapper.readValue(itemPriceJsonFileName, new TypeReference() {});
+		this.itemsInMemory =  mapper.readValue(itemPriceJsonFileName, new TypeReference<Item>() {});
 	  } catch (IOException e) {
-		e.printStackTrace();
+		logger.error("Can not convert json ", e);
 	  }
     }
 
@@ -50,24 +50,27 @@ public class SearchSvcImpl implements SearchSvcInterface {
     public void init(File itemPriceJsonFile) {
 
     	try {
-    		this.itemsInMemory =  mapper.readValue(itemPriceJsonFile, new TypeReference() {});
+    		this.itemsInMemory =  mapper.readValue(itemPriceJsonFile, new TypeReference<Item>() {});
     	  } catch (IOException e) {
-    		e.printStackTrace();
+    		 logger.error("Can not convert json ", e);
     	  }
     }
 
     @Override
     public List<Item> getItems() {
-        return null;
+    	logger.debug("Get all items");
+        return itemsInMemory;
     }
 
     @Override
     public List<Item> getItems(String category) {
-        return null;
+    	logger.debug("Get all items by category {} ",category);
+        return itemsInMemory.stream().filter(item->item.getCategory_short_name().equals(category)).collect(Collectors.toList());
     }
 
     @Override
     public List<Item> getItem(String itemShortName) {
-        return null;
+    	logger.debug("Get all items by shortName {} ",itemShortName);
+        return itemsInMemory.stream().filter(item->item.getShort_name().equals(itemShortName)).collect(Collectors.toList());
     }
 }
