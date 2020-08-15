@@ -40,7 +40,7 @@ public class SearchSvcImpl implements SearchSvcInterface {
     @Override
     public void init(String itemPriceJsonFileName) {
       try {
-		this.itemsInMemory =  mapper.readValue(itemPriceJsonFileName, new TypeReference<Item>() {});
+		this.itemsInMemory =  mapper.readValue(itemPriceJsonFileName, new TypeReference<List<Item>>() {});
 	  } catch (IOException e) {
 		logger.error("Can not convert json ", e);
 	  }
@@ -50,7 +50,7 @@ public class SearchSvcImpl implements SearchSvcInterface {
     public void init(File itemPriceJsonFile) {
 
     	try {
-    		this.itemsInMemory =  mapper.readValue(itemPriceJsonFile, new TypeReference<Item>() {});
+    		this.itemsInMemory =  mapper.readValue(itemPriceJsonFile, new TypeReference<List<Item>>() {});
     	  } catch (IOException e) {
     		 logger.error("Can not convert json ", e);
     	  }
