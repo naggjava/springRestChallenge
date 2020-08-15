@@ -31,14 +31,15 @@ public class SearchRestControllerImpl {
 	@Autowired
 	private SearchSvcInterface searchSvc;
 	
-	
-	
 	@GetMapping
-	public List<Item> getItems(@RequestParam(name = "category", required = false) String category){
-		if(!StringUtils.isEmpty(category)) {
-		  return  searchSvc.getItems(category);
-		}
+	public List<Item> getAllItems(){
 		return searchSvc.getItems();	
+	}
+	
+	
+	@GetMapping(params = "category")
+	public List<Item> getItemsByCategory(@RequestParam(name = "category") String category){
+		  return  searchSvc.getItems(category);
 	}
 	
 	@GetMapping("/{itemShortName}")
